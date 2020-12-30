@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <title>Coord weather</title>
+</head>
+
+<body>
+  <header>
+    Погода
+  </header>
+  <p>Координаты города</p>
+  <p></p>
+  <input name="lat" type="text" maxlength="512" id="input_coord_lat" class="searchField">
+  <input name="lon" type="text" maxlength="512" id="input_coord_lon" class="searchField">
+  <input type="button" value="Показать" onclick="weather_coord()">
+  <section>
+  </section>
+  <script type="text/javascript">
+    function weather_coord() {
+      var header = document.querySelector('header');
+      var section = document.querySelector('section');
+      var requestURL = "http://api.openweathermap.org/data/2.5/weather?id=703448&appid="
+      var appID = 'a7d17150d5815ba362624d5ef73ed1f1'
+      var lat = document.getElementById("input_coord_lat").value;
+      var lon = document.getElementById("input_coord_lon").value;
+      var request = new XMLHttpRequest();
+      requestURLID = 'http://api.openweathermap.org/data/2.5/find?lat=' + lat + '&lon=' + lon + '&appid=' + appID
+      console.log(requestURLID)
+      request.open('GET', requestURLID);
+      request.responseType = 'json';
+      request.send();
+      request.onload = function () {
+        var coordweather_json = request.response;
+        showWeather(coordweather_json);
+
+      }
+      function showWeather(jsonObj) {
+        var d = new Date();
+        var sHead ="Широта " +  lat + "Долгота " + lon + " " + d.toDateString(d);
+        sText = " Название города: " + jsonObj.list[0].name;
+        var Article = document.createElement('article');
+
+        var H2 = document.createElement('h2');
+        var p = document.createElement('p');
+
+        H2.textContent = sHead;
+        p.textContent = sText;
+
+        section.appendChild(H2);
+        section.appendChild(p);
+        section.appendChild(Article);
+        var Article = document.createElement('article');
+        var myPara1 = document.createElement('p');
+        var myPara2 = document.createElement('p');
+        var myPara3 = document.createElement('p');
+        var t1 = Math.round(jsonObj.list[0].main.temp - 273.16);
+        var t2 = Math.round(jsonObj.list[0].main.feels_like - 273.16);
+        myPara1.textContent = 'Температура: ' + t1 + " С";
+        myPara2.textContent = 'Ощущается как: ' + t2 + " С";
+        myPara3.textContent = 'Ветер: ' + jsonObj.list[0].wind.speed + " м/сек";
+        Article.appendChild(myPara1);
+        Article.appendChild(myPara2);
+        Article.appendChild(myPara3);
+        section.appendChild(Article);
+      }
+    }
+  </script>
+
+</body>
+
+</html>
